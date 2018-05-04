@@ -15,7 +15,7 @@ class Pair
         this.second = second;
     }
 
-    equal(other)
+    equals(other)
     {
         return this.first == other.first && this.second == other.second;
     }

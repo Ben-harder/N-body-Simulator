@@ -8,9 +8,12 @@ var ctx = canvas.getContext('2d');
 var particles = [];
 
 
-var pp = new Particle(1000, 200, 200);
-
+var pp = new Particle(15, 150, 300);
+var jj = new Particle(15, 10, 10);
+var gg = new Particle(120, 300, 50);
 particles.push(pp);
+particles.push(jj);
+particles.push(gg);
 
 
 function frame() {
@@ -32,12 +35,16 @@ function draw(ctx) {
         // Perform particle math here:
         // Need to calculate the force between this particle and all other particles.
         //console.log(currParticle);
+        var netForce = calculateForce(currParticle);
+
+        // Use net force to find acceleration.
+        currParticle.A.set(netForce.first/currParticle.mass, netForce.second/currParticle.mass);
 
         currParticle.update(); // Update the position of the particle
 
         // Area of the circle will be proportional to it's mass.
         // A = pi*r^2 => r = sqrt(A/pi) where A = mass
-        var radius = Math.sqrt(currParticle.mass/Math.PI);
+        var radius = Math.sqrt(currParticle.mass/Math.PI) * 2;
 
         // Draw the particle
         ctx.beginPath();
@@ -61,15 +68,14 @@ function calculateForce(particle) {
     for (var i = 0; i < particles.length; i++) {
         var currParticle = particles[i];
 
-        // Account for the particle not being the pass particle
-        if (!currParticle.equal(particle)) {
+        // Account for the particle not being the passed particle
+        if (!currParticle.equals(particle)) {
             var massProduct = currParticle.mass * particle.mass;
-
-            var netParticleMag = Math.sqrt(Math.pow(currParticle.x - particle.x, 2) + Math.pow(currParticle.y - particle.y, 2));
+            var netParticleMag = Math.sqrt(Math.pow(currParticle.pos.first - particle.pos.first, 2) + Math.pow(currParticle.pos.second - particle.pos.second, 2));
             var netMagCubed = Math.pow(netParticleMag, 3);
 
-            netForceX += massProduct * (currParticle.x - particle.x) / netMagCubed;
-            netForceY += massProduct * (currParticle.y - particle.y) / netMagCubed;
+            netForceX += massProduct * (currParticle.pos.first - particle.pos.first) / netMagCubed;
+            netForceY += massProduct * (currParticle.pos.second - particle.pos.second) / netMagCubed;
         }
     }
 

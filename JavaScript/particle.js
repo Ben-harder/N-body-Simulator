@@ -31,7 +31,7 @@ class Particle
         this.V.second += this.A.second;
     }
 
-    equal(other)
+    equals(other)
     {
         return (this.V.equals(other.V) &&
             this.A.equals(other.A) &&
