@@ -25,7 +25,8 @@ function draw(ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#FF0000";
     // Update the position and move all the particles.
-    for (var i = 0; i < particles.length; i++) {
+    for (var i = 0; i < particles.length; i++) 
+    {
         var currParticle = particles[i];
 
         // Perform particle math here:
@@ -41,7 +42,7 @@ function draw(ctx) {
         // Draw the particle
         ctx.beginPath();
 
-        ctx.ellipse(currParticle.x, currParticle.y, radius, radius, 0, 0, 2 * Math.PI);
+        ctx.ellipse(currParticle.pos.first, currParticle.pos.second, radius, radius, 0, 0, 2 * Math.PI);
         
         ctx.fill();
         }
@@ -65,10 +66,12 @@ function calculateForce(particle) {
             var massProduct = currParticle.mass * particle.mass;
 
             var netParticleMag = Math.sqrt(Math.pow(currParticle.x - particle.x, 2) + Math.pow(currParticle.y - particle.y, 2));
-            // 
-            var netMagCubed = Math.pow(currParticleMag - particleMag, 3);
+            var netMagCubed = Math.pow(netParticleMag, 3);
 
-            // netForceX = massProduct * (currParticle.x - particle.x) / netMagCubed
+            netForceX += massProduct * (currParticle.x - particle.x) / netMagCubed;
+            netForceY += massProduct * (currParticle.y - particle.y) / netMagCubed;
         }
     }
+
+    return new Pair(netForceX, netForceY);
 }
