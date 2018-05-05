@@ -28,7 +28,7 @@ function draw(ctx)
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     ctx.fillStyle = "#FFFFFF";
-    
+
     // Update the position and move all the particles.
     for (var i = 0; i < particles.length; i++)
     {
@@ -41,6 +41,9 @@ function draw(ctx)
         }
         else
         {
+            // Check to see if the particle should be merged
+            currParticle.mass = mergeAllClose(currParticle).mass;
+
             // Calculate the netforce vector between this particle and all others.
             var netForce = calculateForce(currParticle);
 
@@ -126,3 +129,43 @@ canvas.addEventListener("mouseup", function ()
     particles.push(particle);
 
 }, false);
+
+/*
+ * This function will loop through the particles and see if there are particles that meet a distance threshold to merge them.
+ */
+function mergeAllClose(particle)
+{
+    var joinThreshhold = Math.sqrt(particle.mass / Math.PI) * 2;
+
+    for (var i = 0; i < particles.length; i++)
+    {
+        var currParticle = particles[i];
+
+        // Make sure it's not the same particle
+        if (!currParticle.equals(particle))
+        {
+            var netParticleMag = Math.sqrt(Math.pow(particle.pos.first - currParticle.pos.first, 2) + Math.pow(particle.pos.second - currParticle.pos.second, 2));
+
+            if (netParticleMag <= joinThreshhold)
+            {
+                // If the particle is within the threshhold, then create a new merged particle, delete the old one and return the new one
+                var newParticle = joinParticles(currParticle, particle);
+
+                delete currParticle;
+                particles.splice(i, 1);
+
+                return newParticle // This particle will replace the argument particle
+            }
+        }
+    }
+    return particle;
+}
+
+/*
+ * This function will take two particles and join them together.
+ */
+function joinParticles(particle1, particle2)
+{
+    particle1.merge(particle2);
+    return particle1;
+}

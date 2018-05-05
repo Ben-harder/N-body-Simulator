@@ -38,5 +38,13 @@ class Particle
             this.pos.equals(other.pos) &&
             this.mass == other.mass);
     }
-    
+
+    merge(other)
+    {
+        this.V.first = this.V.first + other.V.first;
+        this.V.second = this.V.second + other.V.second;
+        this.A.first = this.A.first + other.A.first;
+        this.A.second = this.A.second + other.A.second;
+        this.mass = this.mass + other.mass;
+    }
 }
