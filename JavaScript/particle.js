@@ -39,10 +39,14 @@ class Particle
             this.mass == other.mass);
     }
 
+    // Merge two particles accounting for the conservation of momentum.
     merge(other)
     {
-        this.V.first = this.V.first + other.V.first;
-        this.V.second = this.V.second + other.V.second;
+        // Momentum is conserved: m1v1 + m2v2 = (m1+m2)vf
+        var Vfx = (this.mass * this.V.first + other.mass * other.V.first) / (this.mass + other.mass);
+        var Vfy = (this.mass * this.V.second + other.mass * other.V.second) / (this.mass + other.mass);
+        this.V.first = Vfx;
+        this.V.second = Vfy;
         this.A.first = this.A.first + other.A.first;
         this.A.second = this.A.second + other.A.second;
         this.mass = this.mass + other.mass;

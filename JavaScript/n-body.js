@@ -8,12 +8,17 @@ var ctx = canvas.getContext('2d');
 var particles = [];
 
 
-var pp = new Particle(15, 150, 300);
-var jj = new Particle(15, 10, 10);
-var gg = new Particle(120, 300, 50);
-particles.push(pp);
-particles.push(jj);
-particles.push(gg);
+// var pp = new Particle(15, 150, 300);
+// var jj = new Particle(15, 10, 10);
+// var gg = new Particle(120, 300, 50);
+// particles.push(pp);
+// particles.push(jj);
+// particles.push(gg);
+for (var i = 0; i < canvas.width; i += 10)
+    for (var j = 0; j < canvas.height; j += 10)
+    {
+        particles.push(new Particle(1, j, i));
+    }
 
 
 function frame()
@@ -42,7 +47,7 @@ function draw(ctx)
         else
         {
             // Check to see if the particle should be merged
-            currParticle.mass = mergeAllClose(currParticle).mass;
+            mergeAllClose(currParticle);
 
             // Calculate the netforce vector between this particle and all others.
             var netForce = calculateForce(currParticle);
@@ -63,11 +68,10 @@ function draw(ctx)
 
             ctx.fill();
         }
-
-
-        // Display Particle count
-        document.getElementById("particleCount").innerHTML = "Particle count: " + particles.length;
     }
+
+    // Display Particle count
+    document.getElementById("particleCount").innerHTML = "Particle count: " + particles.length;
 }
 
 /*
@@ -148,24 +152,29 @@ function mergeAllClose(particle)
 
             if (netParticleMag <= joinThreshhold)
             {
-                // If the particle is within the threshhold, then create a new merged particle, delete the old one and return the new one
-                var newParticle = joinParticles(currParticle, particle);
-
+                particle.merge(currParticle);
                 delete currParticle;
                 particles.splice(i, 1);
-
-                return newParticle // This particle will replace the argument particle
             }
         }
     }
-    return particle;
 }
 
-/*
- * This function will take two particles and join them together.
+/* 
+ * This function will clear all the particles from the canvas.
  */
-function joinParticles(particle1, particle2)
+function clearParticles()
 {
-    particle1.merge(particle2);
-    return particle1;
+    for (var i = particles.length; i >= 0; i--)
+    {
+        delete particles[i];
+        particles.splice(i, 1);
+    }
 }
+
+var clearParticlesButton = document.getElementById("clearParticlesButton");
+
+clearParticlesButton.addEventListener("click", function () 
+{
+    clearParticles();
+}, false);
