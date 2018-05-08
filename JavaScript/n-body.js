@@ -6,19 +6,16 @@ var refresh = setInterval(frame, 20);
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext('2d');
 var particles = [];
+var gravitationalConstant = 6.67408*Math.pow(10, -2);
 
 
-// var pp = new Particle(15, 150, 300);
-// var jj = new Particle(15, 10, 10);
-// var gg = new Particle(120, 300, 50);
-// particles.push(pp);
-// particles.push(jj);
-// particles.push(gg);
-for (var i = 0; i < canvas.width; i += 10)
-    for (var j = 0; j < canvas.height; j += 10)
-    {
-        particles.push(new Particle(1, j, i));
-    }
+var pp = new Particle(15, 150, 300);
+var jj = new Particle(15, 10, 10);
+var gg = new Particle(120, 300, 50);
+particles.push(pp);
+particles.push(jj);
+particles.push(gg);
+
 
 
 function frame()
@@ -96,8 +93,8 @@ function calculateForce(particle)
             var netParticleMag = Math.sqrt(Math.pow(currParticle.pos.first - particle.pos.first, 2) + Math.pow(currParticle.pos.second - particle.pos.second, 2));
             var netMagCubed = Math.pow(netParticleMag, 3);
 
-            netForceX += massProduct * (currParticle.pos.first - particle.pos.first) / netMagCubed;
-            netForceY += massProduct * (currParticle.pos.second - particle.pos.second) / netMagCubed;
+            netForceX += gravitationalConstant * massProduct * (currParticle.pos.first - particle.pos.first) / netMagCubed;
+            netForceY += gravitationalConstant * massProduct * (currParticle.pos.second - particle.pos.second) / netMagCubed;
         }
     }
 
